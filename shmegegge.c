@@ -23,17 +23,17 @@ int main(){
   int shmid;
   char * data;
 
-  shmid = shmget(key, 200, 0644);
-  if (shmid == -1){
-    shmid = shmget(key, 200, 0644 | IPC_CREAT);
-    printf("CREATED SHARED MEMORY\n");
-  }
-  data = shmat(shmid, (void *) 0, 0);
-  if (data == (char *)(-1)){
-    perror("shmat");
-  }
-
   while (1){
+    shmid = shmget(key, 200, 0644);
+    if (shmid == -1){
+      shmid = shmget(key, 200, 0644 | IPC_CREAT);
+      printf("CREATED SHARED MEMORY\n");
+    }
+    data = shmat(shmid, (void *) 0, 0);
+    if (data == (char *)(-1)){
+      perror("shmat");
+    }
+
     printf("Shared Memory: '%s'\n", data);
 
     printf("Would you like to change or delete the shared memory?\n");
@@ -45,6 +45,8 @@ int main(){
     }
     else if(strcmp("delete", line) == 0){
       shmctl(shmid, IPC_RMID, NULL);
+      printf("DELETED\n");
+      return 0;
     }
     printf("------------\n");
   }
